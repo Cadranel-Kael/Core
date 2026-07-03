@@ -6,6 +6,7 @@ namespace TypiCMS\Modules\Core\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Spatie\ResponseCache\Facades\ResponseCache;
@@ -58,11 +59,10 @@ final class SettingsAdminController extends BaseAdminController
 
     public function clearCache(): RedirectResponse
     {
+        Artisan::call('cache:clear');
         if (config('responsecache.enabled')) {
             ResponseCache::clear();
         }
-
-        Cache::flush();
         $message = __('Cache cleared.');
 
         return to_route('admin::index-settings')->with(['message' => $message]);
