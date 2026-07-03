@@ -39,14 +39,20 @@ class ModuleServiceProvider extends ServiceProvider
         }
 
         /*
-         * Module page route prefixes are computed from the database at route
-         * registration time, so they get frozen into the cached route file.
          * Rebuild the cache when a page changes so new or moved pages stay
          * reachable. Only runs when routes are actually cached (production).
          */
         if ($this->app->routesAreCached()) {
             Page::saved(fn () => Artisan::call('route:cache'));
             Page::deleted(fn () => Artisan::call('route:cache'));
+        }
+
+        /*
+         * Rebuild the cache when a setting changes.
+         * Only runs when routes are actually cached (production).
+         */
+        if ($this->app->configurationIsCached()) {
+            Setting::saved(fn () => Artisan::call('config:cache'));
         }
 
         /*
