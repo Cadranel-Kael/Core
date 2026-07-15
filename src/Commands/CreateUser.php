@@ -39,6 +39,7 @@ class CreateUser extends Command
                     'first_name' => $firstname,
                     'last_name' => $lastname,
                     'email' => $email,
+                    'locale' => 'en',
                     'superuser' => 1,
                     'activated' => 1,
                 ]);
