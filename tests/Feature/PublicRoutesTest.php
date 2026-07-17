@@ -14,7 +14,7 @@ afterEach(function (): void {
 
 describe('homepage', function (): void {
     test('redirects to default locale', function (): void {
-        if (!config('typicms.main_locale_in_url')) {
+        if (! config('typicms.main_locale_in_url')) {
             $this->markTestSkipped('Root URL only redirects when main locale is in URL.');
         }
 

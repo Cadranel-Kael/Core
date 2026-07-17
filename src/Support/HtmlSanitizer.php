@@ -26,7 +26,7 @@ class HtmlSanitizer
      *
      * @var list<string>
      */
-    private const REMOVE_WITH_CONTENT = [
+    private const array REMOVE_WITH_CONTENT = [
         'script', 'style', 'noscript', 'template', 'object', 'embed', 'applet',
         'form', 'input', 'button', 'select', 'option', 'textarea', 'label',
         'fieldset', 'link', 'meta', 'base', 'head', 'title', 'frame', 'frameset',
@@ -40,7 +40,7 @@ class HtmlSanitizer
      *
      * @var array<string, list<string>>
      */
-    private const ALLOWED_ELEMENTS = [
+    private const array ALLOWED_ELEMENTS = [
         'p' => [],
         'div' => ['id'],
         'span' => [],
@@ -68,28 +68,28 @@ class HtmlSanitizer
      *
      * @var list<string>
      */
-    private const GLOBAL_ATTRIBUTES = ['class', 'style', 'dir', 'lang', 'title'];
+    private const array GLOBAL_ATTRIBUTES = ['class', 'style', 'dir', 'lang', 'title'];
 
     /**
      * Attributes whose value is treated as a URL.
      *
      * @var list<string>
      */
-    private const URL_ATTRIBUTES = ['href', 'src'];
+    private const array URL_ATTRIBUTES = ['href', 'src'];
 
     /**
      * URL schemes allowed for regular links.
      *
      * @var list<string>
      */
-    private const ALLOWED_SCHEMES = ['http', 'https', 'mailto', 'tel', 'ftp'];
+    private const array ALLOWED_SCHEMES = ['http', 'https', 'mailto', 'tel', 'ftp'];
 
     /**
      * CSS properties allowed in inline styles.
      *
      * @var list<string>
      */
-    private const ALLOWED_STYLE_PROPERTIES = [
+    private const array ALLOWED_STYLE_PROPERTIES = [
         'text-align', 'vertical-align', 'width', 'height', 'min-width', 'max-width',
     ];
 
@@ -270,7 +270,11 @@ class HtmlSanitizer
                 continue;
             }
 
-            if ($value === '' || preg_match('/^[a-z0-9\s%#.,\-]+$/i', $value) !== 1) {
+            if ($value === '') {
+                continue;
+            }
+
+            if (preg_match('/^[a-z0-9\s%#.,\-]+$/i', $value) !== 1) {
                 continue;
             }
 

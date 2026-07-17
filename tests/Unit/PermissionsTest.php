@@ -23,7 +23,7 @@ describe('canonical permission list', function (): void {
     });
 
     test('holds only strings', function (): void {
-        expect(array_filter(Permissions::names(), fn ($name): bool => ! is_string($name)))->toBe([]);
+        expect(array_filter(Permissions::names(), fn (string $name): bool => ! is_string($name)))->toBe([]);
     });
 
     test('does not grant a permission twice', function (): void {
@@ -107,7 +107,7 @@ describe('module permissions', function (): void {
 
         expect(Permissions::has('integer key'))->toBeFalse()
             ->and(Permissions::has('array label'))->toBeFalse()
-            ->and(array_filter(Permissions::names(), fn ($name): bool => ! is_string($name)))->toBe([]);
+            ->and(array_filter(Permissions::names(), fn (string $name): bool => ! is_string($name)))->toBe([]);
     });
 });
 

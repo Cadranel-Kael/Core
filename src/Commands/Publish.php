@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TypiCMS\Modules\Core\Commands;
 
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -17,12 +18,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use function Laravel\Prompts\spin;
 
 #[AsCommand(name: 'typicms:publish', description: 'Move a module from the vendor directory to the /Modules directory.')]
+#[Signature('typicms:publish {module : The module that you want to publish}
+            {--force : Overwrite any existing files.}')]
 class Publish extends Command
 {
     protected string $module;
-
-    protected $signature = 'typicms:publish {module : The module that you want to publish}
-            {--force : Overwrite any existing files.}';
 
     public function __construct(
         protected Filesystem $files,

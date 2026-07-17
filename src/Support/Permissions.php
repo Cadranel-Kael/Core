@@ -19,7 +19,7 @@ class Permissions
      *
      * @var array<string, string>
      */
-    private const ALWAYS_GRANTED = [
+    private const array ALWAYS_GRANTED = [
         'change locale' => 'Change locale',
         'update preferences' => 'Update preferences',
         'clear cache' => 'Clear cache',
@@ -30,7 +30,7 @@ class Permissions
      *
      * @var array<string, string>
      */
-    private const GLOBALS = [
+    private const array GLOBALS = [
         'see navbar' => 'See navbar',
         'see dashboard' => 'Access dashboard',
         'read settings' => 'See settings',
@@ -129,7 +129,11 @@ class Permissions
         $modules = [];
 
         foreach ($config as $module => $data) {
-            if (! is_array($data) || ! isset($data['permissions'])) {
+            if (! is_array($data)) {
+                continue;
+            }
+
+            if (! isset($data['permissions'])) {
                 continue;
             }
 
@@ -159,7 +163,11 @@ class Permissions
         $labelled = [];
 
         foreach ($permissions as $name => $label) {
-            if (! is_string($name) || ! is_string($label)) {
+            if (! is_string($name)) {
+                continue;
+            }
+
+            if (! is_string($label)) {
                 continue;
             }
 

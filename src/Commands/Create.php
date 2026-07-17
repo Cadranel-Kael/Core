@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace TypiCMS\Modules\Core\Commands;
 
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'typicms:create', description: 'Create a module in the /Modules directory.')]
+#[Signature('typicms:create {module : The module that you want to create}
+            {--force : Overwrite any existing files.}')]
 class Create extends Command
 {
     protected string $module;
 
     /** @var array<string, string> */
     protected array $tokens;
-
-    protected $signature = 'typicms:create {module : The module that you want to create}
-            {--force : Overwrite any existing files.}';
 
     public function __construct(
         protected Filesystem $files,

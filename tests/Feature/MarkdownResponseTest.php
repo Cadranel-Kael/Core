@@ -16,7 +16,7 @@ function publishedPage(): Page
 {
     $page = Page::query()
         ->published()
-        ->whereNotNull('slug->' . app()->getLocale())
+        ->whereNotNull('slug->'.app()->getLocale())
         ->where('redirect', false)
         ->whereNull('module')
         ->first();
@@ -44,7 +44,7 @@ test('requests from ClaudeBot user agent receive markdown', function (): void {
 });
 
 test('requests to .md URLs receive markdown', function (): void {
-    $this->get(publishedPage()->url() . '.md')->assertOk()->assertHeader('Content-Type', 'text/markdown; charset=UTF-8');
+    $this->get(publishedPage()->url().'.md')->assertOk()->assertHeader('Content-Type', 'text/markdown; charset=UTF-8');
 });
 
 test('admin routes are not affected by markdown middleware', function (): void {

@@ -105,6 +105,7 @@ describe('non-superuser with “update users” permission', function (): void {
         $actor = userManager();
         $role = Role::query()->create(['name' => 'readers']);
         $role->syncPermissions(['read users']);
+
         $target = User::factory()->create(['superuser' => false]);
 
         $this->actingAs($actor)
