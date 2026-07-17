@@ -87,10 +87,4 @@
             :create-button="{{ $model->id === auth()->id() ? 'true' : 'false' }}"
         ></user-passkeys>
     @endif
-
-    <!-- Per user permissions -->
-    {{--
-        <label class="form-label">{{ __('User permissions') }}</label>
-        <x-core::permissions-form />
-    --}}
 </div>
