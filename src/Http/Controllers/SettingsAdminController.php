@@ -12,7 +12,6 @@ use Illuminate\View\View;
 use Spatie\ResponseCache\Facades\ResponseCache;
 use stdClass;
 use TypiCMS\Modules\Core\Models\Setting;
-use TypiCMS\Modules\Core\Services\FileUploader;
 
 final class SettingsAdminController extends BaseAdminController
 {
@@ -37,7 +36,7 @@ final class SettingsAdminController extends BaseAdminController
         return view('admin::settings.index', ['data' => $data]);
     }
 
-    public function save(Request $request, FileUploader $fileUploader): RedirectResponse
+    public function save(Request $request): RedirectResponse
     {
         $data = $request->except('_token');
 
