@@ -21,6 +21,7 @@ abstract class AbstractFormRequest extends FormRequest
     {
         return [
             'slug.*.required_if' => __('The slug is required if published.'),
+            'checked_permissions.*.in' => __('The permission :input is unknown.'),
         ];
     }
 
@@ -39,6 +40,7 @@ abstract class AbstractFormRequest extends FormRequest
             'meta_title.*' => Str::lower(__('Meta title')),
             'meta_description.*' => Str::lower(__('Meta description')),
             'meta_keywords.*' => Str::lower(__('Meta keywords')),
+            'checked_permissions.*' => Str::lower(__('Permission')),
         ];
     }
 }

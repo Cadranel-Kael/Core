@@ -59,18 +59,16 @@ final class UsersAdminController extends BaseAdminController
 
     public function store(UsersFormRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-        $user = User::query()->create($data);
-        $user->roles()->sync($request->array('checked_roles'));
+        $user = User::query()->create($request->safe()->except('checked_roles'));
+        $user->roles()->sync($request->validated('checked_roles', []));
 
         return $this->redirect($request, $user);
     }
 
     public function update(User $user, UsersFormRequest $request): RedirectResponse
     {
-        $data = $request->validated();
-        $user->update($data);
-        $user->roles()->sync($request->array('checked_roles'));
+        $user->update($request->safe()->except('checked_roles'));
+        $user->roles()->sync($request->validated('checked_roles', []));
 
         return $this->redirect($request, $user);
     }

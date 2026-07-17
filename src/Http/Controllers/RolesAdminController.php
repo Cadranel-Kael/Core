@@ -6,9 +6,9 @@ namespace TypiCMS\Modules\Core\Http\Controllers;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Spatie\Permission\Models\Permission;
 use TypiCMS\Modules\Core\Http\Requests\RolesFormRequest;
 use TypiCMS\Modules\Core\Models\Role;
+use TypiCMS\Modules\Core\Support\Permissions;
 
 final class RolesAdminController extends BaseAdminController
 {
@@ -34,37 +34,22 @@ final class RolesAdminController extends BaseAdminController
 
     public function store(RolesFormRequest $request): RedirectResponse
     {
-        $checkedPermissions = $request->array('checked_permissions');
-        $data = $request->except(['exit', 'checked_permissions']);
+        Permissions::sync();
 
-        $this->storeNewPermissions($checkedPermissions);
-
-        $role = Role::query()->create($data);
-        $role->syncPermissions($checkedPermissions);
+        $role = Role::query()->create($request->safe()->only('name'));
+        $role->syncPermissions($request->validated('checked_permissions', []));
 
         return $this->redirect($request, $role);
     }
 
     public function update(Role $role, RolesFormRequest $request): RedirectResponse
     {
-        $checkedPermissions = $request->array('checked_permissions');
-        $data = $request->except(['exit', 'checked_permissions']);
-        $role->update($data);
+        Permissions::sync();
 
-        $this->storeNewPermissions($checkedPermissions);
-        $role->syncPermissions($checkedPermissions);
+        $role->update($request->safe()->only('name'));
+        $role->syncPermissions($request->validated('checked_permissions', []));
         $role->forgetCachedPermissions();
 
         return $this->redirect($request, $role);
-    }
-
-    /**
-     * @param  array<string>  $permissions
-     */
-    private function storeNewPermissions(array $permissions): void
-    {
-        foreach ($permissions as $name) {
-            Permission::query()->firstOrCreate(['name' => $name]);
-        }
     }
 }
