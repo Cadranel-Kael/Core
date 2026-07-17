@@ -61,3 +61,57 @@ it('slugifies the filename', function (): void {
 
     expect($result['filename'])->toBe('my-photo-1.png');
 });
+
+function uploadedFileWithContent(string $content, string $clientName): UploadedFile
+{
+    $path = tempnam(sys_get_temp_dir(), 'upload');
+    file_put_contents($path, $content);
+
+    return new UploadedFile($path, $clientName, 'text/plain', null, true);
+}
+
+it('does not store a client extension that would be served as executable markup', function (string $clientName): void {
+    $file = uploadedFileWithContent('<img src=x onerror="alert(document.cookie)">', $clientName);
+
+    $result = new FileUploader()->handle($file);
+
+    expect($result['extension'])->toBe('txt')
+        ->and($result['filename'])->toEndWith('.txt');
+})->with(['poc.html', 'poc.htm', 'poc.xhtml', 'poc.xml', 'poc.js']);
+
+it('falls back to an inert extension when the content type is not allowed either', function (): void {
+    $file = uploadedFileWithContent("\x00\x01\x02\x03binary\xff\xfe", 'poc.html');
+
+    $result = new FileUploader()->handle($file);
+
+    expect($result['extension'])->toBe('bin');
+});
+
+it('keeps the client extension for legitimate files whose content sniffs differently', function (): void {
+    $file = uploadedFileWithContent("# Heading\n\nSome markdown.\n", 'notes.md');
+
+    $result = new FileUploader()->handle($file);
+
+    expect($result['extension'])->toBe('md')
+        ->and($result['filename'])->toBe('notes.md');
+});
+
+it('sanitizes svg content even when the client filename is not .svg', function (): void {
+    $svg = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(document.cookie)</script></svg>';
+    $file = uploadedFileWithContent($svg, 'evil.html');
+
+    $result = new FileUploader()->handle($file);
+
+    expect(Storage::get($result['path']))->not->toContain('<script>')
+        ->and($result['extension'])->toBe('svg');
+});
+
+it('sanitizes svg content uploaded as .svg', function (): void {
+    $svg = '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(document.cookie)</script></svg>';
+    $file = uploadedFileWithContent($svg, 'logo.svg');
+
+    $result = new FileUploader()->handle($file);
+
+    expect(Storage::get($result['path']))->not->toContain('<script>')
+        ->and($result['extension'])->toBe('svg');
+});
