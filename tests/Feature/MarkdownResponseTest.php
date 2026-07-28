@@ -1,5 +1,6 @@
 <?php
 
+use Spatie\ResponseCache\Facades\ResponseCache;
 use TypiCMS\Modules\Core\Models\Page;
 
 beforeEach(function (): void {
@@ -53,6 +54,36 @@ test('admin routes are not affected by markdown middleware', function (): void {
 
 test('API routes are not affected by markdown middleware', function (): void {
     $this->get('/api/pages', ['Accept' => 'text/markdown'])->assertRedirect();
+});
+
+test('a bot warming the response cache does not leak markdown to browsers', function (): void {
+    config(['responsecache.enabled' => true]);
+    ResponseCache::clear();
+
+    $url = publishedPage()->url();
+
+    $this->get($url, ['User-Agent' => 'ClaudeBot/1.0'])
+        ->assertOk()
+        ->assertHeader('Content-Type', 'text/markdown; charset=UTF-8');
+
+    $this->get($url)
+        ->assertOk()
+        ->assertHeader('Content-Type', 'text/html; charset=UTF-8');
+});
+
+test('a browser warming the response cache does not force HTML onto bots', function (): void {
+    config(['responsecache.enabled' => true]);
+    ResponseCache::clear();
+
+    $url = publishedPage()->url();
+
+    $this->get($url)
+        ->assertOk()
+        ->assertHeader('Content-Type', 'text/html; charset=UTF-8');
+
+    $this->get($url, ['User-Agent' => 'ClaudeBot/1.0'])
+        ->assertOk()
+        ->assertHeader('Content-Type', 'text/markdown; charset=UTF-8');
 });
 
 test('sitemap returns XML even when markdown is requested', function (): void {
